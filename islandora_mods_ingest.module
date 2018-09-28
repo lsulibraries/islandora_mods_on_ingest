@@ -4,10 +4,14 @@
 **/
 function islandora_mods_ingest_form_alter(&$form, &$form_state, $form_id)
 {
+if ($form_id != 'islandora_ingest_form')
+{
+return;
+}
 $form['Image']=array(
 '#title'=>t('Title'),
 '#type'=>'textfield',
-'#description'=>'t('Please Enter the name of the Image')
+'#description'=> t('Please Enter Your Name')
 );
 $form['upload']=array(
 '#type'=>'file',
