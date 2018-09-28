@@ -1,0 +1,22 @@
+<?php
+/**
+*Implements hook+form_alter()
+**/
+function islandora_mods_ingest_form_alter(&$form, &$form_state, $form_id)
+{
+$form['Image']=array(
+'#title'=>t('Title'),
+'#type'=>'textfield',
+'#description'=>'t('Please Enter the name of the Image')
+);
+$form['upload']=array(
+'#type'=>'file',
+'#description'=>t('Upload the Image'),
+);
+$form['submit']=array(
+'#type'=>'submit',
+'#value'=>('Submit')
+);
+return $form;
+}
+
