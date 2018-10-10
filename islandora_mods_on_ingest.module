@@ -24,14 +24,31 @@ $form['submit']=array(
 return $form;
 }
 
-function islandora_mods_on_ingest_form_islandora_ingest_form_alter($form, &$form_state){
-  if ($form_state['islandora']['step_id'] == 'islandora_basic_collection_select_content_model') {
-    $form_state['islandora']['step_storage']['islandoa_mods_on_ingest_form'] = array(
+/**
+ * Implements hook_FORM_ID_alter().
+ */
+function islandora_mods_on_ingest_form_islandora_ingest_form_alter($form, &$form_state) {
+  module_load_include('inc', 'islandora', 'includes/ingest.form');
+  if($form_state['islandora']['step_id'] == 'islandora_mods_on_ingest') {
+    islandora_ingest_form_get_shared_storage($form_state);
+    $storage = $form_state['islandora']['step_storage'];
+    // $storage['islandora_mods_on_ingest'] = $form_state['choose'];
+  }
+  dpm($storage);
+}
+
+/**
+ * Implements hook_islandora_ingest_steps().
+ */
+function islandora_mods_on_ingest_islandora_ingest_steps(array &$form_state) {
+
+  return array(
+    'islandora_mods_on_ingest' => array(
       'weight' => -40,
       'type' => 'form',
       'form_id' => 'islandoa_mods_on_ingest_form',
       'module' => 'islandora_mods_on_ingest',
       'file' => 'includes/islandora_mods_on_ingest.form.inc',
-    );
-  }
+    ),
+  );
 }
