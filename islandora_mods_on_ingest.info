@@ -2,4 +2,4 @@ name = Islandora Mods on Ingest
 description = Option to upload mods file directly
 package = Islandora
 core = 7.x
-files[] = islandora_mods_ingest.module
+files[] = islandora_mods_on_ingest.module
