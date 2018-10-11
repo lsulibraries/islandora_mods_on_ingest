@@ -27,7 +27,7 @@ function islandora_mods_on_ingest_form($form, &$form_state) {
       '#collapsed' => FALSE,
       'file' => array(
         '#type' => 'managed_file',
-        '#required' => TRUE,
+        '#required' => FALSE,
         '#title' => t('Upload Document'),
         '#size' => 64,
         '#description' => t('Select a file to upload.<br/>Files must be less than <strong>@size MB.</strong>', array('@size' => $upload_size)),
