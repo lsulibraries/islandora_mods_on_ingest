@@ -22,11 +22,5 @@ function islandora_mods_on_ingest_form($form, &$form_state) {
       'file_validate_size' => $upload_size,
     )
   );
-  dpm($form_state);
-  dpm($form);
   return $form;
-}
-
-function islandora_mods_on_ingest_form_submit() {
-
 }

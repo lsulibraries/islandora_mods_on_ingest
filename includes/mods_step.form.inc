@@ -68,9 +68,5 @@ function islandora_mods_on_ingest_form_submit($form, &$form_state) {
       $ds->label = $file->filename;
       $ds->mimetype = $file->filemime;
     }
-    unset($form_state['islandora']['step_storage']['xml_form_builder_metadata_step']);
-    unset($form_state['islandora']['step_storage']['xml_form_builder_association_step']);
-    unset($form_state['islandora']['step_storage']['islandora_mods_on_ingest']);
-    dpm($form_state);
   }
 }
