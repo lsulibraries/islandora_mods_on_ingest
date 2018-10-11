@@ -46,13 +46,11 @@ function islandora_mods_on_ingest_form($form, &$form_state) {
 
 function islandora_mods_on_ingest_form_submit($form, &$form_state) {
   module_load_include('inc', 'islandora', 'includes/ingest.form');
-  //load shared storage to attempt and replace next step if we upload mods (not working).
   $shared_storage = &islandora_ingest_form_get_step_storage($form_state, 'islandora_mods_on_ingest');
   $shared_storage['upload_or_edit'] = $form_state['values']['choose'];
   if ($form_state['values']['choose'] == 0) {
-    //do something whith the file... mimic what is done with the image in the next penultimate step.
     //borrowed from islandora_sp_large_image_cmodel and adapted for mods.
-    //works great, and ever fills in the edit form at the next step, but we still have that edit step
+    //fills in the edit form at the next step, but we still have that edit step
     $object = islandora_ingest_form_get_object($form_state);
     if ($form_state['values']['file']) {
       if (empty($object['MODS'])) {
