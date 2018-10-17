@@ -5,13 +5,82 @@
  * Implements hook_islandora_ingest_steps().
  */
 function islandora_mods_on_ingest_islandora_ingest_steps(array &$form_state) {
-  return array(
-    'islandora_mods_on_ingest' => array(
-      'weight' => -40,
-      'type' => 'form',
-      'form_id' => 'islandora_mods_on_ingest_form',
-      'module' => 'islandora_mods_on_ingest',
-      'file' => 'includes/mods_step.form.inc',
-    ),
-  );
+  // return array(
+  //   'islandora_mods_on_ingest' => array(
+  //     'weight' => -40,
+  //     'type' => 'form',
+  //     'form_id' => 'islandora_mods_on_ingest_form',
+  //     'module' => 'islandora_mods_on_ingest',
+  //     'file' => 'includes/mods_step.form.inc',
+  //   ),
+  // );
+}
+
+
+function islandora_mods_on_ingest_form_islandora_ingest_form_alter(&$form, &$form_state) {
+  module_load_include('inc', 'islandora', 'includes/ingest.form');
+  if($form_state['islandora']['step_id'] == 'islandora_basic_collection_select_content_model') {
+    $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
+    $form['choose'] = array(
+      '#type' => 'select',
+      '#options' => array('Upload MODS?','edit MODS using form'),
+      '#default' => 0,
+      '#weight' => -20,
+    );
+    $form['upload_file'] = array(
+      '#weight' => -19,
+      'dsid_fieldset' => array(
+        //add visibility condition.
+        '#states' => array(
+          'visible' => array(
+            ':input[name="choose"]' => array('value' => '0'),
+          ),
+        ),
+        //borrow from datastream.inc
+        '#type' => 'fieldset',
+        '#title' => t("Upload MODS.xml"),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+        'file' => array(
+          '#type' => 'managed_file',
+          '#required' => FALSE,
+          '#title' => t('Upload Document'),
+          '#size' => 64,
+          '#description' => t('Select a file to upload.<br/>Files must be less than <strong>@size MB.</strong>', array('@size' => $upload_size)),
+          '#default_value' => isset($form_state['values']['files']) ? $form_state['values']['files'] : NULL,
+          '#upload_location' => file_default_scheme() . '://',
+          '#upload_validators' => array(
+            'file_validate_extensions' => array('xml'),
+            // Assume its specified in MB.
+            'file_validate_size' => array($upload_size * 1024 * 1024),
+          ),
+        ),
+      ),
+    );
+    array_unshift($form['next']['#submit'], 'mods_upload_submit');
+    return $form;
+  }
+}
+
+function mods_upload_submit($form, &$form_state) {
+  module_load_include('inc', 'islandora', 'includes/ingest.form');
+  if ($form_state['values']['choose'] == 0) {
+    //borrowed from islandora_sp_large_image_cmodel and adapted for mods.
+    //fills in the edit form at the next step, but we still have that edit step
+    $object = islandora_ingest_form_get_object($form_state);
+    if ($form_state['values']['file']) {
+      if (empty($object['MODS'])) {
+        $ds = $object->constructDatastream('MODS', 'M');
+        $object->ingestDatastream($ds);
+      }
+      else {
+        $ds = $object['MODS'];
+      }
+      $file = file_load($form_state['values']['file']);
+      $path = drupal_realpath($file->uri);
+      $ds->setContentFromFile($path, FALSE);
+      $ds->label = $file->filename;
+      $ds->mimetype = $file->filemime;
+    }
+  }
 }
