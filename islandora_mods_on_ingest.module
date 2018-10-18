@@ -1,22 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Main module file for Islandora MODS on Ingest.
+ */
 
 /**
- * Implements hook_islandora_ingest_steps().
+ * Implements hook_form_form_alter().
  */
-function islandora_mods_on_ingest_islandora_ingest_steps(array &$form_state) {
-  // return array(
-  //   'islandora_mods_on_ingest' => array(
-  //     'weight' => -40,
-  //     'type' => 'form',
-  //     'form_id' => 'islandora_mods_on_ingest_form',
-  //     'module' => 'islandora_mods_on_ingest',
-  //     'file' => 'includes/mods_step.form.inc',
-  //   ),
-  // );
-}
-
-
 function islandora_mods_on_ingest_form_islandora_ingest_form_alter(&$form, &$form_state) {
   module_load_include('inc', 'islandora', 'includes/ingest.form');
   if($form_state['islandora']['step_id'] == 'islandora_basic_collection_select_content_model') {
@@ -69,13 +60,8 @@ function mods_upload_submit($form, &$form_state) {
     //fills in the edit form at the next step, but we still have that edit step
     $object = islandora_ingest_form_get_object($form_state);
     if ($form_state['values']['file']) {
-      if (empty($object['MODS'])) {
-        $ds = $object->constructDatastream('MODS', 'M');
-        $object->ingestDatastream($ds);
-      }
-      else {
-        $ds = $object['MODS'];
-      }
+      $ds = $object->constructDatastream('MODS', 'M');
+      $object->ingestDatastream($ds);
       $file = file_load($form_state['values']['file']);
       $path = drupal_realpath($file->uri);
       $ds->setContentFromFile($path, FALSE);
