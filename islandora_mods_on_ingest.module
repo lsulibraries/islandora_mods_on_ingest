@@ -14,7 +14,7 @@ function islandora_mods_on_ingest_form_islandora_ingest_form_alter(&$form, &$for
     $upload_size = min((int) ini_get('post_max_size'), (int) ini_get('upload_max_filesize'));
     $form['choose'] = array(
       '#type' => 'select',
-      '#options' => array('Upload MODS?','edit MODS using form'),
+      '#options' => array('Upload MODS?','Edit MODS using form'),
       '#default' => 0,
       '#weight' => -20,
     );
